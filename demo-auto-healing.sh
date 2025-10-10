@@ -26,7 +26,7 @@ sleep 10 # Wait for server to start
 # Run initial tests - both should pass
 echo -e "${BLUE}3. Running initial tests (both should pass)...${NC}"
 echo -e "${BLUE}Running Playwright test...${NC}"
-npx playwright test --reporter=list
+npx playwright test tests/login.spec.js --reporter=list
 
 echo -e "${BLUE}Running mabl test...${NC}"
 echo "Note: Please run the mabl resilient login test manually in the mabl app for this step"
@@ -108,7 +108,7 @@ read -p "Press [Enter] to continue to the next step..."
 # Re-run tests to show difference
 echo -e "${BLUE}5. Re-running tests (Playwright should fail, mabl should auto-heal)...${NC}"
 echo -e "${BLUE}Running Playwright test...${NC}"
-npx playwright test --reporter=list || echo -e "${RED}Playwright test failed as expected${NC}"
+npx playwright test tests/login.spec.js --reporter=list || echo -e "${RED}Playwright test failed as expected${NC}"
 
 read -p "Press [Enter] to continue to the next step..."
 mabl deployments create --application-id na3sMXGAm4lbvCtFZnTMOw-a --environment-id pGtboI1hJIhF5D51qtrQUQ-e --labels auto-heal-demo --await-completion
