@@ -212,6 +212,8 @@ h1, h2, h3 {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 label {
@@ -225,6 +227,8 @@ label {
   padding: 2rem;
   border-radius: 3px;
   box-shadow: var(--shadow);
+  position: relative;
+  z-index: 2;
 }
 
 #login #logo {
@@ -238,9 +242,15 @@ label {
   margin-bottom: .3rem;
   margin-top: .6rem;
   color: rgba(68, 78, 97, .6);
+  pointer-events: none;
 }
 
-#login input, input, select, textarea {
+#login form {
+  position: relative;
+  z-index: 3;
+}
+
+#login input {
   font-family: var(--font-family);
   outline: none;
   width: 100%;
@@ -248,9 +258,35 @@ label {
   padding: .3rem .5rem;
   border-radius: 3px;
   border: 1px solid rgba(0, 102, 204, .3);
+  box-sizing: border-box;
+  pointer-events: auto !important;
+  cursor: text !important;
+  background-color: white;
+  position: relative;
+  z-index: 10;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
-#login input:focus, input:focus, select:focus, textarea:focus {
+input:not([disabled]), select:not([disabled]), textarea:not([disabled]) {
+  font-family: var(--font-family);
+  outline: none;
+  width: 100%;
+  font-size: 1.4rem;
+  padding: .3rem .5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 102, 204, .3);
+  box-sizing: border-box;
+}
+
+#login input:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, .1);
+}
+
+input:not([disabled]):focus, select:not([disabled]):focus, textarea:not([disabled]):focus {
   border-color: var(--secondary-color);
   box-shadow: 0 0 0 2px rgba(0, 102, 204, .1);
 }
@@ -279,6 +315,17 @@ label {
 .btn:hover, .btn2:hover {
   background-color: #13B0B8;
   color: white;
+}
+
+#login .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#login .btn span[role="img"] {
+  font-size: 1.2rem;
 }
 
 .notif {
@@ -429,4 +476,101 @@ input:disabled {
 
 .title {
   text-transform: capitalize;
+}
+
+/* Stock Tracker Styles */
+.stock-tracker {
+  max-width: 1200px;
+}
+
+.stock-list, .available-stocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.stock-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stock-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stock-card.available {
+  opacity: 0.8;
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.stock-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.stock-name {
+  margin: 0.3rem 0 0 0;
+  color: var(--secondary-text-color);
+  font-size: 0.9rem;
+}
+
+.stock-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stock-price .price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.stock-price .change {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-add, .btn-remove {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-add {
+  background-color: #16C3CC;
+  color: white;
+}
+
+.btn-add:hover {
+  background-color: #13B0B8;
+}
+
+.btn-remove {
+  background-color: rgba(220, 20, 60, 0.1);
+  color: #DC143C;
+  font-size: 1.5rem;
+  padding: 0.2rem 0.6rem;
+  line-height: 1;
+}
+
+.btn-remove:hover {
+  background-color: rgba(220, 20, 60, 0.2);
 }

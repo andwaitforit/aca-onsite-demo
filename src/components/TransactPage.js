@@ -27,7 +27,8 @@ export const TransactPage = (props) => {
     }
 
     const onDeposit = (e) => {
-        const amount = formatNumber(trim(e.target.value));
+        const rawValue = e.target.value;
+        const amount = trim(rawValue);
         setDepositAmount(amount);
     }
 
@@ -71,7 +72,7 @@ export const TransactPage = (props) => {
                 
                 <div className="transfer-icon"><i className={icon}></i></div>
                 <label>Amount to {props.page}</label>
-                <input type="text" name="amount" value={depositAmount} onChange={onDeposit} autoComplete="off" className="right big-input" />
+                <input type="text" name="amount" value={depositAmount || ''} onChange={onDeposit} autoComplete="off" className="right big-input" placeholder="0.00" />
                 <button type="submit" className="btn">{props.page}</button>
             </form>
         </section>

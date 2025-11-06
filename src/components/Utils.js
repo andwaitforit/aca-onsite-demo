@@ -4,7 +4,10 @@ export function formatNumber(number)
 }
 
 export function trim(number) {
-    return parseFloat(number.replace(/,/g, '')) || 0;
+    if (typeof number === 'string') {
+        return parseFloat(number.replace(/[$,]/g, '')) || 0;
+    }
+    return parseFloat(number) || 0;
 }
 
 export function findAccount(number) {

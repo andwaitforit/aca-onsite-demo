@@ -4,6 +4,7 @@ import { MainContent } from "./MainContent";
 import { CreateAccountPage } from "./CreateAccountPage";
 import { TransferPage } from "./TransferPage";
 import { TransactPage } from "./TransactPage";
+import { StockTracker } from "./StockTracker";
 
 export const Dashboard = (props) => {
     const [page, setPage] = useState('home');
@@ -112,6 +113,15 @@ export const Dashboard = (props) => {
             <main>
                 <Sidebar changePage={changePageHandler} page={page} logoutHandler={props.logoutHandler} />
                 <TransactPage users={users} setUsers={setUsers} notif={notif} setNotif={setNotif} type="subtract" page={page} />
+            </main>
+        )
+    }
+
+    if(page === 'stocks') {
+        return (
+            <main>
+                <Sidebar changePage={changePageHandler} page={page} logoutHandler={props.logoutHandler} />
+                <StockTracker />
             </main>
         )
     }

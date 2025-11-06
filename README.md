@@ -26,6 +26,13 @@ replace the api key with your own cli auth key.
 ## To start the dev server
 NODE_OPTIONS=--openssl-legacy-provider npm start
 
+## To start the backend API server (for Stock Tracker)
+npm run server
+
+The backend API runs on http://localhost:3001 and provides fake stock data for Parks & Recreation businesses.
+
+**Note:** You'll need to run both the backend server and the React app in separate terminal windows for the Stock Tracker to work.
+
 ## To run the demo script 
 sh demo-auto-healing.sh
 
@@ -44,5 +51,40 @@ password: admin
 email: client@client.com
 password: abc123
 ```
+
+## Stock Tracker Feature
+
+The app includes a Stock Tracker module that displays fake stock prices for businesses from Parks & Recreation:
+- Swanson Foods (SWANSON)
+- Little Sebastian Memorial (LITTLES)
+- Pawn Shop (PAWN)
+- Rent-A-Swag (RENT)
+- Tom's Bistro (TOMS)
+- JJ's Diner (JJ)
+- The Pit (PIT)
+- Sweetums (SWEET)
+- Gryzzl (GRIZ)
+- Entertainment 720 (ENT)
+
+To use the Stock Tracker:
+1. Start the backend API server: `npm run server`
+2. Start the React app: `NODE_OPTIONS=--openssl-legacy-provider npm start`
+3. Navigate to "Stock Tracker" in the sidebar menu
+4. Add stocks to track by clicking the "+ Add" button
+5. Remove stocks by clicking the "×" button
+
+Stock prices update automatically every 5 seconds with random fluctuations.
+
+### API Documentation
+
+For detailed API endpoint documentation and testing examples, see:
+- [API Documentation](./docs/API_DOCUMENTATION.md)
+
+### Testing the API
+
+You can test the API endpoints using:
+- **cURL**: See examples in the API documentation
+- **Postman**: Import the endpoints from the documentation
+- **Test Script**: Run `node scripts/test-api.js` (requires Node.js 18+ or node-fetch)
 
 [Live demo of Banking App](https://jeffdelara.github.io/banking-app/)

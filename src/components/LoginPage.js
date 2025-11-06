@@ -11,13 +11,19 @@ export const LoginPage = (props) => {
       props.loginHandler(username, password);
     }
   
-    const onChangeUsername = (event) => {
-      setUsername(event.target.value);
-    }
-  
-    const onChangePassword = (event) => {
-      setPassword(event.target.value);
-    }
+  const onChangeUsername = (event) => {
+    event.stopPropagation();
+    const value = event.target.value;
+    console.log('Username changed:', value);
+    setUsername(value);
+  }
+
+  const onChangePassword = (event) => {
+    event.stopPropagation();
+    const value = event.target.value;
+    console.log('Password changed:', value);
+    setPassword(value);
+  }
   
     return (
       <div id="login-page">
@@ -26,27 +32,37 @@ export const LoginPage = (props) => {
           <Notif message={props.notif.message} style={props.notif.style} />
           <form onSubmit={onSubmitHandler}>
             <label htmlFor="username">Username</label>
-            <input id="username" autoComplete="off" onChange={onChangeUsername}  value={username} type="text" />
+            <input 
+              id="username" 
+              autoComplete="off" 
+              onChange={onChangeUsername}
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
+              value={username} 
+              type="text"
+              style={{ pointerEvents: 'auto', cursor: 'text' }}
+            />
             <label htmlFor="password">Password</label>
-            <input id="password" autoComplete="off" onChange={onChangePassword} value={password} type="password" />
+            <input 
+              id="password" 
+              autoComplete="off" 
+              onChange={onChangePassword}
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
+              value={password} 
+              type="password"
+              style={{ pointerEvents: 'auto', cursor: 'text' }}
+            />
             <button 
               type="submit" 
-              className="auth-button primary-action"
+              className="btn auth-button primary-action"
               data-testid="auth-submit"
               data-action="authenticate"
               data-tracking="user-auth-btn"
               aria-label="Sign in to your account"
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#16C3CC',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
             >
               <span role="img" aria-label="sparkles">✨</span>
-              <span>Continue to Account</span>
+              <span>Login</span>
             </button>
           </form>
         </div>

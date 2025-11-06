@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Notif } from "./Notif";
-import { formatNumber, getDateToday } from "./Utils";
+import { formatNumber, getDateToday, trim } from "./Utils";
 
 export const TransferPage = (props) => {
     const {isClient, client, setClient} = props;
@@ -65,7 +65,7 @@ export const TransferPage = (props) => {
 
     const transferFund = event => {
         event.preventDefault();
-        const amount = parseFloat(event.target.elements.amount.value.replace(/,/g, ''));
+        const amount = trim(event.target.elements.amount.value);
         if(amount <= 0) return false;
 
         // get localstorage users
@@ -128,7 +128,8 @@ export const TransferPage = (props) => {
     }
 
     const onTransfer = (e) => {
-        const transfer = parseFloat(e.target.value.replace(/,/g, '')) || 0;
+        const rawValue = e.target.value;
+        const transfer = trim(rawValue);
         setTransferAmount(transfer);
     }
 
@@ -156,7 +157,7 @@ export const TransferPage = (props) => {
                 <input type="text" className="right" value={formatNumber(sender.balance)} disabled />
 
                 <label>Amount to Transfer</label>
-                <input type="text" name="amount" value={formatNumber(transferAmount)} onChange={onTransfer} autoComplete="off" className="right big-input" />
+                <input type="text" name="amount" value={transferAmount || ''} onChange={onTransfer} autoComplete="off" className="right big-input" placeholder="0.00" />
 
                 <div className="transfer-icon"><i className='bx bx-down-arrow-alt'></i></div>
                 <h2>Receiver</h2>
