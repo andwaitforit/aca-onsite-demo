@@ -38,7 +38,7 @@ export const LoginPage = (props) => {
               aria-label="Sign in to your account"
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#4CAF50',
+                backgroundColor: '#16C3CC',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',

@@ -35,8 +35,8 @@ Use the following credentials to test the app.
 
 ### For Admin
 ```
-email: admin@admin.com
-password: abc123
+email: admin
+password: admin
 ```
 
 ### For Client

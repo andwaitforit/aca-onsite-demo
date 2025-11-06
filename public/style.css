@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
 :root {
-    --first-color: rgb(246, 244, 237);
-    --secondary-color: rgb(219, 204, 163);
-    --text-color: rgb(59, 49, 40);
-    --secondary-text-color: rgb(110, 97, 81);
+    --first-color: #F5F7FA;
+    --secondary-color: #0066CC;
+    --text-color: #444E61;
+    --secondary-text-color: #003D99;
+    --accent-color: #00A3E0;
 }
 
 * {
@@ -32,7 +33,7 @@ main {
 #side-menu {
     font-size: 1rem;
     padding: 1.2rem;
-    background-color: var(--text-color);
+    background: linear-gradient(180deg, #6C69D1 0%, #5A57C0 100%);
 }
 
 #side-menu ul {
@@ -45,7 +46,7 @@ main {
 }
 
 #side-menu a {
-    color: var(--secondary-color);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
 }
 
@@ -80,8 +81,8 @@ main {
 }
 
 #actions button {
-    background-color: var(--first-color);
-    color: var(--secondary-text-color);
+    background-color: #16C3CC;
+    color: white;
     padding: .5rem;
     font-size: 1.1rem;
     border: 0;
@@ -91,8 +92,8 @@ main {
 }
 
 #actions button:hover {
-    background-color: rgba(219, 204, 163, .3);
-    color: var(--text-color);
+    background-color: #13B0B8;
+    color: white;
 }
 
 #transactions {
@@ -111,7 +112,7 @@ main {
 }
 
 #transactions table th, td  {
-    border-bottom: 1px solid rgba(59, 49, 40, .2);
+    border-bottom: 1px solid rgba(68, 78, 97, .2);
 }
 
 #transactions table tr {

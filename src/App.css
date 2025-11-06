@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
 :root {
-    --first-color: rgb(246, 244, 237);
-    --secondary-color: rgb(219, 204, 163);
-    --text-color: rgb(59, 49, 40);
-    --secondary-text-color: rgb(110, 97, 81);
-    --shadow: 0px 1px 2px rgba(170, 170, 170, .4);
+    --first-color: #F5F7FA;
+    --secondary-color: #0066CC;
+    --text-color: #444E61;
+    --secondary-text-color: #003D99;
+    --accent-color: #00A3E0;
+    --shadow: 0px 1px 2px rgba(0, 0, 0, .1);
     --font-family: 'Inter', sans-serif;
 }
 
@@ -66,7 +67,7 @@ h1, h2, h3 {
 #side-menu {
     font-size: 1rem;
     padding: 1.2rem;
-    background-color: var(--text-color);
+    background: linear-gradient(180deg, #6C69D1 0%, #5A57C0 100%);
 }
 
 #side-menu ul {
@@ -79,7 +80,7 @@ h1, h2, h3 {
 }
 
 #side-menu a {
-    color: var(--secondary-color);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     display: block;
     transition: .3s;
@@ -87,10 +88,16 @@ h1, h2, h3 {
 
 #side-menu a:hover {
   color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 0.5rem;
+  border-radius: 3px;
 }
 
 #side-menu a.active {
   color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding-left: 0.5rem;
+  border-radius: 3px;
 }
 
 #main-content {
@@ -133,8 +140,8 @@ h1, h2, h3 {
 }
 
 #actions button {
-    background-color: var(--first-color);
-    color: var(--secondary-text-color);
+    background-color: #16C3CC;
+    color: white;
     padding: .5rem;
     font-size: 1.1rem;
     border: 0;
@@ -145,8 +152,8 @@ h1, h2, h3 {
 }
 
 #actions button:hover {
-    background-color: rgba(219, 204, 163, .3);
-    color: var(--text-color);
+    background-color: #13B0B8;
+    color: white;
 }
 
 #transactions {
@@ -182,7 +189,7 @@ h1, h2, h3 {
 }
 
 #transactions table th, td  {
-    border-bottom: 1px solid rgba(59, 49, 40, .2);
+    border-bottom: 1px solid rgba(68, 78, 97, .2);
 }
 
 #transactions table tr {
@@ -221,7 +228,7 @@ label {
 }
 
 #login #logo {
-  color: var(--text-color);
+  color: var(--secondary-color);
   font-size: 2.8rem;
   text-align: center;
 }
@@ -230,7 +237,7 @@ label {
   text-transform: uppercase;
   margin-bottom: .3rem;
   margin-top: .6rem;
-  color: rgba(59, 49, 40, .6);
+  color: rgba(68, 78, 97, .6);
 }
 
 #login input, input, select, textarea {
@@ -240,11 +247,16 @@ label {
   font-size: 1.4rem;
   padding: .3rem .5rem;
   border-radius: 3px;
-  border: 1px solid var(--text-color);
+  border: 1px solid rgba(0, 102, 204, .3);
+}
+
+#login input:focus, input:focus, select:focus, textarea:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, .1);
 }
 
 .btn, .btn2 {
-  background-color: var(--secondary-text-color);
+  background-color: #16C3CC;
   color: white;
   padding: .7rem;
   font-size: 1.3rem;
@@ -265,7 +277,7 @@ label {
 }
 
 .btn:hover, .btn2:hover {
-  background-color: var(--text-color);
+  background-color: #13B0B8;
   color: white;
 }
 
@@ -358,8 +370,8 @@ input:disabled {
 }
 
 .btn-muted {
-  background-color: rgba(219, 204, 163, .3);
-  color: var(--secondary-text-color);
+  background-color: rgba(22, 195, 204, .1);
+  color: #16C3CC;
 }
 
 .modal input[type=number] {
@@ -400,8 +412,8 @@ input:disabled {
 .mr {
   margin-right: .7rem;
   font-size: 1.3rem;
-  background-color: rgba(219, 204, 163, .4);
-  color: var(--text-color);
+  background-color: rgba(0, 102, 204, .15);
+  color: var(--secondary-color);
   border: none;
   padding: .1rem .3rem;
   padding-top: .4rem;
