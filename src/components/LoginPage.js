@@ -29,7 +29,25 @@ export const LoginPage = (props) => {
             <input id="username" autoComplete="off" onChange={onChangeUsername}  value={username} type="text" />
             <label htmlFor="password">Password</label>
             <input id="password" autoComplete="off" onChange={onChangePassword} value={password} type="password" />
-            <button type="submit" className="btn">Login</button>
+            <button 
+              type="submit" 
+              className="auth-button primary-action"
+              data-testid="auth-submit"
+              data-action="authenticate"
+              data-tracking="user-auth-btn"
+              aria-label="Sign in to your account"
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#4CAF50',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              <span role="img" aria-label="sparkles">✨</span>
+              <span>Continue to Account</span>
+            </button>
           </form>
         </div>
       </div>
