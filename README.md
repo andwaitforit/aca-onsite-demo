@@ -2,6 +2,8 @@
 
 ![Banking App Screenshot](screen.png)
 
+> **📚 Documentation**: See [DOCUMENTATION.md](./DOCUMENTATION.md) for organized documentation index or [docs/](./docs/) for all detailed guides.
+
 The user is a bank employee who manually manages the bank's accounts.
 He does the creation of account manually using the account holders name and sets the initial balance of the account if possible.
 
@@ -22,18 +24,99 @@ Since this test will be running again your local environment you'll want to depl
 your local host as a dev environment in your workspace.  Additionally within the demo-auto-healing.sh you'll need to
 replace the api key with your own cli auth key.
 
-## To start the dev server
-NODE_OPTIONS=--openssl-legacy-provider npm start
+## Quick Start Commands
 
-## To start the backend API server (for Stock Tracker)
-npm run server
+All commands are available via npm scripts for easy access:
 
-The backend API runs on http://localhost:3001 and provides fake stock data for Parks & Recreation businesses.
+### Development
+```bash
+npm start                    # Start React dev server (includes legacy OpenSSL support)
+npm run server              # Start backend API server (port 3001)
+npm run build               # Build for production (includes legacy OpenSSL support)
+```
 
-**Note:** You'll need to run both the backend server and the React app in separate terminal windows for the Stock Tracker to work.
+**Note:** The `start` and `build` scripts automatically include `NODE_OPTIONS=--openssl-legacy-provider` for compatibility with older React versions.
 
-## To run the demo script 
-sh demo-auto-healing.sh
+### Testing
+```bash
+npm run test:playwright     # Run all Playwright tests
+npm run test:playwright:ui  # Run Playwright tests with UI
+npm run test:donation       # Run donation feature tests
+npm run test:api            # Test backend API endpoints
+npm run test:codex-mcp      # Run codex MCP tests
+```
+
+### Docker
+```bash
+npm run docker:up           # Start Docker containers
+npm run docker:down         # Stop Docker containers
+npm run docker:logs         # View container logs
+```
+
+### Demo Scripts
+```bash
+npm run autoheal            # Run auto-healing demo (mabl vs Playwright)
+npm run add-broken-feature  # Add buggy donation feature
+npm run fix-feature         # Fix the donation feature bug
+npm run reset-feature       # Reset to original state
+npm run demo:full           # Run complete donation demo automatically
+```
+
+## Demo Scenarios
+
+### 1. Auto-Healing Demo (mabl vs Playwright)
+```bash
+npm run autoheal
+```
+
+This demo demonstrates mabl's auto-healing capabilities compared to traditional Playwright selectors. It:
+1. Runs tests against the original application (both pass)
+2. Modifies the login button significantly
+3. Re-runs tests - Playwright fails, mabl auto-heals and passes
+4. Restores original state
+
+**Setup Required:**
+- Deploy the mabl link agent
+- Configure localhost as a dev environment in your workspace
+- Update `demo-auto-healing.sh` with your mabl CLI auth key
+
+### 2. Pre-PR Bug Detection Demo (Donation Feature)
+```bash
+npm run demo:full
+```
+
+This demo simulates a realistic development workflow where testing catches bugs before PR:
+1. Developer adds Sweetums Charity donation feature (with a bug)
+2. Runs tests locally - tests FAIL ❌
+3. Developer catches bug before creating PR
+4. Applies fix to the feature
+5. Runs tests again - tests PASS ✅
+6. Resets to original state
+
+**Manual Step-by-Step:**
+```bash
+# Step 1: Add broken feature
+npm run add-broken-feature
+
+# Step 2: Start app (in another terminal)
+npm start
+
+# Step 3: Run tests (should fail)
+npm run test:donation
+
+# Step 4: Fix the bug
+npm run fix-feature
+
+# Step 5: Run tests (should pass)
+npm run test:donation
+
+# Step 6: Reset
+npm run reset-feature
+```
+
+For detailed documentation, see:
+- **[Donation Feature Demo Guide](./docs/DONATION_FEATURE_DEMO.md)** - Complete demo walkthrough
+- **[Documentation Index](./docs/README.md)** - All documentation organized by topic
 
 ## Docker Deployment
 

@@ -21,3 +21,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Demo backup files
+.original-transact-page.backup
+
+# Playwright test results
+/test-results
+/playwright-report
+/playwright/.cache
+
+# Debug files
+debug-checkbox.js
+test-checkbox-simple.html

@@ -20,7 +20,7 @@ git stash push -m "demo-original-state"
 
 # Start dev server if not running
 echo -e "${BLUE}2. Starting dev server...${NC}"
-NODE_OPTIONS=--openssl-legacy-provider npm start &
+npm start &
 sleep 10 # Wait for server to start
 
 # Run initial tests - both should pass

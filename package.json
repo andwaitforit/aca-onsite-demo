@@ -15,13 +15,27 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "server": "node server.js",
-    "build": "react-scripts build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "autoheal": "sh demo-auto-healing.sh",
+    "test:playwright": "npx playwright test",
+    "test:playwright:ui": "npx playwright test --ui",
+    "test:donation": "npx playwright test tests/donation.spec.js --reporter=list",
+    "test:api": "node scripts/test-api.js",
+    "test:codex-mcp": "sh scripts/test-codex-mcp.sh",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "add-broken-feature": "sh add-broken-feature.sh",
+    "fix-feature": "sh fix-feature.sh",
+    "reset-feature": "sh reset-feature.sh",
+    "demo:full": "npm run add-broken-feature && npm run test:donation || true && npm run fix-feature && npm run test:donation && npm run reset-feature",
+    "help": "sh show-commands.sh"
   },
   "eslintConfig": {
     "extends": [
