@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write  # Required for artifact attestations
 
     steps:
       - name: Checkout repository
@@ -48,6 +49,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Frontend Docker image
+        id: build-frontend
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -72,6 +74,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push API Docker image
+        id: build-api
         uses: docker/build-push-action@v5
         with:
           context: .
