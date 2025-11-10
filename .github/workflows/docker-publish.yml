@@ -19,7 +19,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write  # Required for artifact attestations
 
     steps:
       - name: Checkout repository
@@ -84,20 +83,4 @@ jobs:
           labels: ${{ steps.meta-api.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Generate artifact attestation for Frontend
-        if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
-          subject-digest: ${{ steps.build-frontend.outputs.digest }}
-          push-to-registry: true
-
-      - name: Generate artifact attestation for API
-        if: github.event_name != 'pull_request'
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api
-          subject-digest: ${{ steps.build-api.outputs.digest }}
-          push-to-registry: true
 
