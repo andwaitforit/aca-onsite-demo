@@ -38,9 +38,12 @@ echo -e "  ${YELLOW}npm run demo:full${NC}           - Run complete donation dem
 echo ""
 
 echo -e "${GREEN}🐳 DOCKER${NC}"
-echo -e "  ${CYAN}npm run docker:up${NC}           - Start Docker containers"
+echo -e "  ${CYAN}npm run docker:up${NC}           - Start Docker containers (local build)"
 echo -e "  ${CYAN}npm run docker:down${NC}         - Stop Docker containers"
 echo -e "  ${CYAN}npm run docker:logs${NC}         - View container logs"
+echo -e "  ${CYAN}npm run docker:pull${NC}         - Pull images from GHCR"
+echo -e "  ${CYAN}npm run docker:ghcr${NC}         - Start using GHCR images"
+echo -e "  ${CYAN}npm run docker:ghcr:down${NC}    - Stop GHCR containers"
 echo ""
 
 echo -e "${GREEN}🚀 DEPLOYMENT${NC}"

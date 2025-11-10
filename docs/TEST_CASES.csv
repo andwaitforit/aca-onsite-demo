@@ -1,0 +1,100 @@
+Test ID,Test Name,Priority,Type,Pre-conditions,Test Steps,Expected Results,Status
+TC-BANK-1234-01,Verify Donation UI Appears on Withdrawal Page,High,Functional,"Application running, User logged in, Test account exists","1. Navigate to Banking App
+2. Log in with credentials
+3. Click on Withdraw in sidebar
+4. Verify donation checkbox visible
+5. Verify label text
+6. Navigate to Deposit page
+7. Verify donation checkbox NOT visible","✅ Donation visible on Withdraw
+✅ Label shows $5 amount  
+✅ Not visible on Deposit",
+TC-BANK-1234-02,Verify Checkbox Toggle Functionality,High,Functional,"User on Withdraw page, Donation checkbox visible","1. Observe checkbox initial state
+2. Click checkbox
+3. Verify becomes checked
+4. Click again
+5. Verify becomes unchecked
+6. Click label text
+7. Verify checkbox toggles
+8. Hover over checkbox
+9. Verify pointer cursor","✅ Starts unchecked
+✅ Clicking toggles state
+✅ Label click toggles
+✅ Pointer cursor on hover
+✅ Visual feedback works",
+TC-BANK-1234-03,Verify Correct Amount Deduction With Donation,Critical,Functional,"User logged in, Account balance $10000","1. Navigate to Withdraw
+2. Select test account
+3. Note balance: $10000
+4. Enter withdrawal: $50
+5. Check donation checkbox
+6. Click withdraw button
+7. Wait for success message
+8. Verify message content
+9. Note new balance
+10. Calculate: $10000 - $55 = $9945","✅ Initial: $10000
+✅ Withdrawal: $50
+✅ Donation: $5
+✅ Total: $55
+✅ New balance: $9945
+✅ Success message mentions donation",
+TC-BANK-1234-04,Verify Correct Amount Deduction Without Donation,Critical,Functional,"User logged in, Account balance $10000","1. Navigate to Withdraw
+2. Select test account  
+3. Note balance: $10000
+4. Enter withdrawal: $75
+5. Do NOT check donation
+6. Click withdraw button
+7. Wait for success message
+8. Verify message content
+9. Note new balance
+10. Calculate: $10000 - $75 = $9925","✅ Initial: $10000
+✅ Withdrawal: $75
+✅ Donation: $0
+✅ Total: $75
+✅ New balance: $9925
+✅ No donation in message",
+TC-BANK-1234-05,Verify Multiple Consecutive Transactions,Medium,Functional,"User logged in, Account balance $10000","1. Navigate to Withdraw
+2. Transaction 1: $100 with donation
+3. Verify balance: $9895
+4. Transaction 2: $50 without donation
+5. Verify balance: $9845
+6. Transaction 3: $25 with donation
+7. Verify balance: $9815
+8. Verify messages appropriate","✅ Each transaction correct
+✅ Checkbox resets after each
+✅ Balances accurate
+✅ Messages reflect donation status",
+TC-BANK-1234-06,Verify Insufficient Funds Handling,High,Negative,"User logged in, Account balance $50","1. Navigate to Withdraw
+2. Select account with $50
+3. Enter withdrawal: $50
+4. Check donation ($5)
+5. Click withdraw button
+6. Observe result","✅ Transaction fails
+✅ Error message shown
+✅ Balance stays $50
+✅ Can retry with adjustments",
+TC-BANK-1234-07,Verify UI Elements and Styling,Low,UI/UX,"User on Withdraw page","1. Locate donation container
+2. Verify background: #f0f8ff
+3. Verify border: 1px solid #4CAF50
+4. Verify padding: 15px
+5. Verify border-radius: 5px
+6. Verify checkbox: 18px × 18px
+7. Verify font size: 16px
+8. Verify font weight: 500
+9. Verify emoji present
+10. Test responsive design","✅ All styling correct
+✅ Good visual hierarchy
+✅ Colors have contrast
+✅ Checkbox easily clickable
+✅ Responsive on all devices",
+TC-BANK-1234-08,Verify Browser Compatibility,Medium,Compatibility,"Chrome, Firefox, Safari, Edge installed","For each browser:
+1. Open application
+2. Log in
+3. Navigate to Withdraw
+4. Verify checkbox appears
+5. Test toggle functionality
+6. Perform withdrawal with donation
+7. Verify balance updates
+8. Check console for errors","✅ Consistent across browsers
+✅ Checkbox works in all
+✅ No JavaScript errors
+✅ Calculations correct",
+

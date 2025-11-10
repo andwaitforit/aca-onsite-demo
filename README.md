@@ -120,12 +120,37 @@ For detailed documentation, see:
 
 ## Docker Deployment
 
-The application can be deployed using Docker containers. Both the frontend and backend API are containerized.
+The application can be deployed using Docker containers. Both the frontend and backend API are containerized and automatically published to GitHub Container Registry.
 
 ### Prerequisites
 - Docker and Docker Compose installed on your system
 
-### Quick Start with Docker Compose
+### Option 1: Using Pre-built Images from GHCR (Recommended)
+
+Pull and run the latest published images:
+
+```bash
+# Pull the latest images
+docker-compose -f docker-compose.ghcr.yml pull
+
+# Start the application
+docker-compose -f docker-compose.ghcr.yml up -d
+
+# Access the application
+# - Frontend: http://localhost:3000
+# - API: http://localhost:3001
+
+# Stop the containers
+docker-compose -f docker-compose.ghcr.yml down
+```
+
+**Available Images:**
+- `ghcr.io/andwaitforit/mabl-bank-demo-frontend:latest`
+- `ghcr.io/andwaitforit/mabl-bank-demo-api:latest`
+
+See [GitHub Container Registry Guide](./docs/GITHUB_CONTAINER_REGISTRY.md) for more details.
+
+### Option 2: Build Locally
 
 1. **Build and start all services:**
    ```bash
@@ -178,11 +203,15 @@ The frontend automatically connects to the API service using Docker's internal n
 ### Testing Docker Deployment
 
 For detailed testing instructions, see:
-- [Docker Testing Guide](./docs/DOCKER_TESTING.md)
+- **[Docker Testing Guide](./docs/DOCKER_TESTING.md)** - Local Docker usage
+- **[GitHub Container Registry Guide](./docs/GITHUB_CONTAINER_REGISTRY.md)** - Using published images
 
 Quick test:
 ```bash
-# Build and start
+# Option 1: Use published images
+docker-compose -f docker-compose.ghcr.yml up
+
+# Option 2: Build locally
 docker-compose up --build
 
 # In another terminal, test the API
@@ -190,6 +219,10 @@ curl http://localhost:3001/api/stocks
 
 # Open browser to http://localhost:3000
 ```
+
+### Continuous Deployment
+
+Docker images are automatically built and published to GitHub Container Registry when code is pushed to the `main` branch. See [GHCR Documentation](./docs/GITHUB_CONTAINER_REGISTRY.md) for details.
 
 ## Demo Account Credentials
 

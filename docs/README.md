@@ -43,6 +43,7 @@ This directory contains all documentation for the Banking App demo project.
 |----------|---------|----------|
 | [API Documentation](API_DOCUMENTATION.md) | Backend API reference | Developers |
 | [Docker Testing](DOCKER_TESTING.md) | Docker setup and testing | DevOps |
+| [GitHub Container Registry](GITHUB_CONTAINER_REGISTRY.md) | GHCR setup and usage | DevOps |
 | [Codex MCP Jenkins](CODEX_MCP_JENKINS.md) | CI/CD integration | DevOps |
 
 ### 🐛 For Debugging

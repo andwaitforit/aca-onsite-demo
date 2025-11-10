@@ -133,13 +133,33 @@ Manage Docker containers:
 
 | Command | Description | Notes |
 |---------|-------------|-------|
-| `npm run docker:up` | Start containers (detached) | Runs `docker-compose up -d` |
+| `npm run docker:up` | Start containers (detached) | Builds locally with `docker-compose up -d` |
 | `npm run docker:down` | Stop and remove containers | Cleanup all containers |
 | `npm run docker:logs` | View container logs | Follow mode (-f) |
+| `npm run docker:pull` | Pull images from GHCR | Downloads latest published images |
+| `npm run docker:ghcr` | Start using GHCR images | Runs `docker-compose -f docker-compose.ghcr.yml up -d` |
+| `npm run docker:ghcr:down` | Stop GHCR containers | Stops containers running GHCR images |
 
 ### Docker Workflow
+
+**Option 1: Using Pre-built Images (Fastest)**
 ```bash
-# Start everything
+# Pull latest images from GitHub Container Registry
+npm run docker:pull
+
+# Start using GHCR images
+npm run docker:ghcr
+
+# Check logs
+npm run docker:logs
+
+# Stop when done
+npm run docker:ghcr:down
+```
+
+**Option 2: Build Locally**
+```bash
+# Build and start everything
 npm run docker:up
 
 # Check logs
@@ -152,6 +172,12 @@ npm run docker:down
 **Access Points:**
 - Frontend: http://localhost:3000
 - API: http://localhost:3001
+
+**Published Images:**
+- `ghcr.io/andwaitforit/mabl-bank-demo-frontend:latest`
+- `ghcr.io/andwaitforit/mabl-bank-demo-api:latest`
+
+See [GitHub Container Registry Guide](./GITHUB_CONTAINER_REGISTRY.md) for more details.
 
 ---
 

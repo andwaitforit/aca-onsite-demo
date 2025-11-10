@@ -1,0 +1,100 @@
+═══════════════════════════════════════════════════════════════
+JIRA STORY - QUICK COPY FORMAT
+═══════════════════════════════════════════════════════════════
+
+TITLE: Add $5 Charity Donation Option to Withdrawal Transactions
+
+STORY ID: BANK-1234
+TYPE: Feature
+PRIORITY: Medium
+STORY POINTS: 5
+
+───────────────────────────────────────────────────────────────
+USER STORY
+───────────────────────────────────────────────────────────────
+
+As a bank customer
+I want to have the option to donate $5 to Sweetums Charity when making a withdrawal
+So that I can easily support a charitable cause while conducting my banking transactions
+
+───────────────────────────────────────────────────────────────
+ACCEPTANCE CRITERIA
+───────────────────────────────────────────────────────────────
+
+AC1: Donation Option Visibility
+Given I am on the withdrawal page
+When I select an account
+Then I should see a donation option labeled "Donate $5 to Sweetums Charity 🍬"
+And the donation option should NOT appear on the deposit page
+
+AC2: Donation Toggle Functionality
+Given I am on the withdrawal page with the donation option visible
+When I click on the donation checkbox or label
+Then the checkbox should toggle between checked and unchecked states
+And I should be able to toggle it multiple times before submitting
+
+AC3: Donation Amount Deduction
+Given I have selected an account with a balance of $10,000
+And I enter a withdrawal amount of $50
+And I check the "Donate $5 to Sweetums Charity" checkbox
+When I submit the withdrawal
+Then my account balance should be reduced by $55 ($50 withdrawal + $5 donation)
+And I should see a success message including "Thank you for your $5 donation to Sweetums Charity!"
+
+AC4: Withdrawal Without Donation
+Given I am on the withdrawal page
+And I enter a withdrawal amount of $50
+And I do NOT check the donation checkbox
+When I submit the withdrawal
+Then my account balance should be reduced by only $50
+And the success message should NOT mention the donation
+
+AC5: Fixed Donation Amount
+Given I am on the withdrawal page
+When I view the donation option
+Then the amount should be clearly displayed as "$5"
+And there should be no input field to change the donation amount
+
+───────────────────────────────────────────────────────────────
+TECHNICAL REQUIREMENTS
+───────────────────────────────────────────────────────────────
+
+- Component: TransactPage.js
+- Location: Withdrawal page only
+- State: donationEnabled (boolean)
+- Fixed amount: $5
+- Calculation: totalAmount = withdrawal + donation
+- Checkbox ID: donation-toggle
+- Styling: Light blue background, green border, 18px checkbox
+
+───────────────────────────────────────────────────────────────
+DEFINITION OF DONE
+───────────────────────────────────────────────────────────────
+
+☐ All acceptance criteria met
+☐ All test cases pass (8 test cases)
+☐ Automated tests pass (npm run test:donation)
+☐ Code review completed
+☐ No console warnings/errors
+☐ Cross-browser testing completed
+☐ Documentation updated
+☐ QA sign-off received
+☐ Product owner acceptance received
+
+───────────────────────────────────────────────────────────────
+LABELS
+───────────────────────────────────────────────────────────────
+
+feature, customer-engagement, charity, mvp, q4-goal
+
+───────────────────────────────────────────────────────────────
+ATTACHMENTS
+───────────────────────────────────────────────────────────────
+
+- Full documentation: docs/JIRA_DONATION_FEATURE.md
+- Test cases: 8 detailed test scenarios
+- Demo video: npm run demo:full
+- Technical docs: docs/DONATION_FEATURE_DEMO.md
+
+═══════════════════════════════════════════════════════════════
+
