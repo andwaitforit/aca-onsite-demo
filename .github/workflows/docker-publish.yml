@@ -60,3 +60,27 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Run mabl regression tests
+        id: mabl-test-deployment
+        if: github.event_name != 'pull_request'
+        uses: mablhq/github-run-tests-action@v1
+        env:
+          MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
+          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
+          plan-labels: regression
+          continue-on-failure: false
+
+      - name: Output mabl test results
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          echo "mabl Deployment ID: ${{ steps.mabl-test-deployment.outputs.mabl-deployment-id }}"
+          echo "Plans Run: ${{ steps.mabl-test-deployment.outputs.plans_run }}"
+          echo "Plans Passed: ${{ steps.mabl-test-deployment.outputs.plans_passed }}"
+          echo "Plans Failed: ${{ steps.mabl-test-deployment.outputs.plans_failed }}"
+          echo "Tests Run: ${{ steps.mabl-test-deployment.outputs.tests_run }}"
+          echo "Tests Passed: ${{ steps.mabl-test-deployment.outputs.tests_passed }}"
+          echo "Tests Failed: ${{ steps.mabl-test-deployment.outputs.tests_failed }}"
+
