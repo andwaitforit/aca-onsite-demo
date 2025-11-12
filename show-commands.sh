@@ -34,6 +34,7 @@ echo -e "  ${YELLOW}npm run autoheal${NC}            - Auto-healing demo (mabl v
 echo -e "  ${YELLOW}npm run add-broken-feature${NC}  - Add buggy donation feature"
 echo -e "  ${YELLOW}npm run fix-feature${NC}         - Fix the donation feature bug"
 echo -e "  ${YELLOW}npm run reset-feature${NC}       - Reset to original state"
+echo -e "  ${YELLOW}npm run reset-and-commit${NC}    - Reset demo & commit changes"
 echo -e "  ${YELLOW}npm run demo:full${NC}           - Run complete donation demo"
 echo ""
 

@@ -37,6 +37,7 @@
     "add-broken-feature": "sh add-broken-feature.sh",
     "fix-feature": "sh fix-feature.sh",
     "reset-feature": "sh reset-feature.sh",
+    "reset-and-commit": "sh reset-and-commit.sh",
     "demo:full": "npm run add-broken-feature && npm run test:donation || true && npm run fix-feature && npm run test:donation && npm run reset-feature",
     "help": "sh show-commands.sh"
   },
