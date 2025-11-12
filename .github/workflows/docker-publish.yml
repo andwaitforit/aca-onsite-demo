@@ -105,6 +105,7 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           authkey: ${{ secrets.TS_AUTHKEY }}
           tags: tag:ci
+          args: --accept-routes
 
       - name: Pre-deploy hook (placeholder)
         run: echo "Add maintenance tasks here (e.g., drain traffic)."
@@ -112,7 +113,7 @@ jobs:
       - name: Restart container on TrueNAS
         run: |
           set -euo pipefail
-          ssh -o StrictHostKeyChecking=accept-new deploy@truenas-scale \
+          ssh -o StrictHostKeyChecking=accept-new deploy@192.168.1.10 \
             "sudo '/mnt/NVME Pool/mabldemo/andy/restart-bank-demo.sh'"
 
       - name: Run mabl smoke tests
