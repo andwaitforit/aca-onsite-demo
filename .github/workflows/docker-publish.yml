@@ -99,7 +99,6 @@ jobs:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: tag:ci
-          version: stable
 
       - name: Pre-deploy hook (placeholder)
         run: echo "Add maintenance tasks here (e.g., drain traffic)."
