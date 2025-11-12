@@ -93,6 +93,11 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Check Tailscale secrets
+        run: |
+          test -n "${{ secrets.TS_OAUTH_CLIENT_ID }}" || { echo "Client ID missing"; exit 1; }
+          test -n "${{ secrets.TS_OAUTH_CLIENT_SECRET }}" || { echo "Secret missing"; exit 1; }
+
       - name: Start Tailscale (OIDC auth)
         uses: tailscale/github-action@v2
         with:
