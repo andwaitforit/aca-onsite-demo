@@ -14,7 +14,9 @@ scripts/
 
 ## 🎭 Demo Scripts (`scripts/demo/`)
 
-Scripts for managing the donation feature demo cycle:
+Scripts for managing demo cycles and features:
+
+### Donation Feature Demo (`scripts/demo/`)
 
 | Script | Command | Description |
 |--------|---------|-------------|
@@ -24,8 +26,21 @@ Scripts for managing the donation feature demo cycle:
 | `demo-auto-healing.sh` | `npm run autoheal` | Auto-healing demo (mabl vs Playwright) |
 | `demo-cycle.sh` | `npm run demo:cycle` | Interactive demo cycle manager |
 
-### Demo Cycle Workflow
+### UI Auto-Healing Demo (`scripts/demo/ui-demo/`)
 
+| Script | Command | Description |
+|--------|---------|-------------|
+| `add-ui-change.sh` | `npm run ui-demo:add` | Applies login button UI changes |
+| `reset-ui-change.sh` | `npm run ui-demo:reset` | Resets login button to original |
+| `demo-ui-cycle.sh` | `npm run ui-demo:cycle` | Interactive UI demo manager |
+
+Additional UI demo commands:
+- `npm run ui-demo:test-pw` - Run Playwright login test
+- `npm run ui-demo:full` - Complete UI demo cycle
+
+### Demo Workflows
+
+**Donation Feature Cycle:**
 ```bash
 # 1. Add the feature
 npm run add-broken-feature
@@ -35,6 +50,24 @@ npm run fix-feature
 
 # 3. Reset to original
 npm run reset-feature
+```
+
+**UI Auto-Healing Cycle:**
+```bash
+# 1. Test original UI
+npm run ui-demo:test-pw     # Should PASS
+
+# 2. Apply UI changes
+npm run ui-demo:add
+
+# 3. Test modified UI
+npm run ui-demo:test-pw     # Will FAIL (mabl will PASS)
+
+# 4. Reset to original
+npm run ui-demo:reset
+
+# 5. Verify working again
+npm run ui-demo:test-pw     # Should PASS
 ```
 
 ## 🚀 Deployment Scripts (`scripts/deployment/`)
@@ -117,6 +150,7 @@ npm run demo:reset-and-deploy   # Reset and deploy clean state
 
 - [NPM Scripts Reference](../docs/NPM_SCRIPTS_REFERENCE.md)
 - [Donation Feature Demo](../docs/DONATION_FEATURE_DEMO.md)
+- [UI Auto-Healing Demo](../docs/UI_AUTOHEALING_DEMO.md)
 - [Docker Testing](../docs/DOCKER_TESTING.md)
 - [Deployment Guide](../DEPLOYMENT.md)
 

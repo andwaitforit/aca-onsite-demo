@@ -10,6 +10,7 @@ This directory contains all documentation for the Banking App demo project.
 
 ### Demo Guides
 - **[Donation Feature Demo](DONATION_FEATURE_DEMO.md)** - Pre-PR bug detection demo walkthrough
+- **[UI Auto-Healing Demo](UI_AUTOHEALING_DEMO.md)** - Playwright brittleness vs mabl auto-healing
 - **[Auto-Healing Demo](../README.md#1-auto-healing-demo-mabl-vs-playwright)** - mabl vs Playwright comparison
 
 ### Technical Documentation
@@ -35,6 +36,7 @@ This directory contains all documentation for the Banking App demo project.
 | Document | Purpose | Audience |
 |----------|---------|----------|
 | [Donation Feature Demo](DONATION_FEATURE_DEMO.md) | Complete walkthrough of bug detection demo | Sales, Training |
+| [UI Auto-Healing Demo](UI_AUTOHEALING_DEMO.md) | UI change resilience demo (Playwright vs mabl) | Sales, Training |
 | [Setup Complete](SETUP_COMPLETE.md) | Quick overview of all features | New users |
 | [NPM Scripts Reference](NPM_SCRIPTS_REFERENCE.md) | Command cheat sheet | Developers |
 
@@ -70,7 +72,9 @@ This directory contains all documentation for the Banking App demo project.
 
 ### "I want to run a demo"
 1. Start with: [Setup Complete](SETUP_COMPLETE.md)
-2. Then: [Donation Feature Demo](DONATION_FEATURE_DEMO.md)
+2. Choose demo:
+   - Bug detection: [Donation Feature Demo](DONATION_FEATURE_DEMO.md)
+   - UI resilience: [UI Auto-Healing Demo](UI_AUTOHEALING_DEMO.md)
 3. Reference: [NPM Scripts Reference](NPM_SCRIPTS_REFERENCE.md)
 
 ### "Something isn't working"
@@ -101,7 +105,8 @@ docs/
 │   └── NPM_SCRIPTS_REFERENCE.md           # Command reference
 │
 ├── Demo Guides/
-│   └── DONATION_FEATURE_DEMO.md           # Main demo walkthrough
+│   ├── DONATION_FEATURE_DEMO.md           # Bug detection demo
+│   └── UI_AUTOHEALING_DEMO.md             # UI resilience demo
 │
 ├── Technical/
 │   ├── API_DOCUMENTATION.md               # API endpoints
@@ -134,8 +139,11 @@ docs/
 # View all available commands
 npm run help
 
-# Run complete donation demo
+# Run donation feature demo
 npm run demo:full
+
+# Run UI auto-healing demo
+npm run ui-demo:cycle
 
 # View this documentation
 cat docs/README.md

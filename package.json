@@ -28,6 +28,11 @@
     "test:donation": "npx playwright test tests/donation.spec.js --reporter=list",
     "test:api": "node scripts/testing/test-api.js",
     "test:codex-mcp": "sh scripts/testing/test-codex-mcp.sh",
+    "ui-demo:add": "sh scripts/demo/ui-demo/add-ui-change.sh",
+    "ui-demo:reset": "sh scripts/demo/ui-demo/reset-ui-change.sh",
+    "ui-demo:test-pw": "npx playwright test tests/login-ui.spec.js --grep \"should login with specific button selector\" --reporter=list",
+    "ui-demo:cycle": "sh scripts/demo/ui-demo/demo-ui-cycle.sh",
+    "ui-demo:full": "npm run ui-demo:cycle",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
@@ -64,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "gh-pages": "^3.2.3"
   }
 }
