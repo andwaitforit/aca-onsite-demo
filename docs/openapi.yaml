@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: Stock Tracker API
+  version: 1.0.0
+  description: |
+    Simple stock quote API serving fake Parks & Recreation businesses.
+    Prices are randomly generated per request. Data is in-memory only; POST/DELETE changes are not persisted across restarts.
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+paths:
+  /api/stocks:
+    get:
+      summary: List all stocks
+      description: Returns all available stocks with a randomized quote for each call.
+      responses:
+        '200':
+          description: Array of stock quotes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockQuote'
+              examples:
+                success:
+                  summary: Example response
+                  value:
+                    - symbol: SWANSON
+                      name: Swanson Foods
+                      price: 46.23
+                      change: "1.12"
+                      changePercent: "0.024"
+                    - symbol: LITTLES
+                      name: Little Sebastian Memorial
+                      price: 118.45
+                      change: "-0.55"
+                      changePercent: "-0.004"
+    post:
+      summary: Create a stock
+      description: Adds a stock to the in-memory list. Fails if the symbol already exists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStockRequest'
+      responses:
+        '201':
+          description: Stock created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock'
+              examples:
+                success:
+                  summary: Created stock
+                  value:
+                    symbol: SWEETX
+                    name: Sweetums Expansion Fund
+                    basePrice: 62.5
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidBody:
+                  summary: Missing fields
+                  value:
+                    error: "symbol, name, and numeric basePrice are required"
+        '409':
+          description: Duplicate symbol
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                duplicate:
+                  summary: Symbol already exists
+                  value:
+                    error: "Stock symbol already exists"
+  /api/stocks/{symbol}:
+    get:
+      summary: Get stock by symbol
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+      responses:
+        '200':
+          description: Stock quote
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockQuote'
+              examples:
+                success:
+                  summary: Quote for SWANSON
+                  value:
+                    symbol: SWANSON
+                    name: Swanson Foods
+                    price: 47.91
+                    change: "0.88"
+                    changePercent: "0.019"
+        '404':
+          description: Stock not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missing:
+                  summary: Symbol not found
+                  value:
+                    error: "Stock not found"
+    delete:
+      summary: Delete a stock
+      description: Removes a stock from the in-memory list.
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+      responses:
+        '200':
+          description: Stock deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              examples:
+                success:
+                  summary: Deleted symbol
+                  value:
+                    deleted: SWEETX
+        '404':
+          description: Stock not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missing:
+                  summary: Symbol not found
+                  value:
+                    error: "Stock not found"
+  /api/stocks/batch/{symbols}:
+    get:
+      summary: Get multiple stocks
+      description: Returns quotes for a comma-separated list of stock symbols. Unknown symbols are ignored.
+      parameters:
+        - name: symbols
+          in: path
+          required: true
+          description: Comma-separated list of stock symbols (case-sensitive)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array of matching stock quotes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockQuote'
+              examples:
+                success:
+                  summary: Quotes for SWANSON & JJ
+                  value:
+                    - symbol: SWANSON
+                      name: Swanson Foods
+                      price: 44.15
+                      change: "-1.05"
+                      changePercent: "-0.023"
+                    - symbol: JJ
+                      name: JJ's Diner
+                      price: 19.77
+                      change: "0.48"
+                      changePercent: "0.025"
+components:
+  parameters:
+    SymbolParam:
+      name: symbol
+      in: path
+      required: true
+      description: Stock ticker symbol (case-sensitive)
+      schema:
+        type: string
+  schemas:
+    Stock:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: SWANSON
+        name:
+          type: string
+          example: Swanson Foods
+        basePrice:
+          type: number
+          format: float
+          example: 45.5
+      required:
+        - symbol
+        - name
+        - basePrice
+    StockQuote:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: SWANSON
+        name:
+          type: string
+          example: Swanson Foods
+        price:
+          type: number
+          format: float
+          example: 46.23
+        change:
+          type: string
+          description: Dollar change formatted to two decimals
+          example: "2.15"
+        changePercent:
+          type: string
+          description: Percent change formatted to two decimals (e.g., 0.04 for 4%)
+          example: "0.04"
+      required:
+        - symbol
+        - name
+        - price
+        - change
+        - changePercent
+    CreateStockRequest:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: E720
+        name:
+          type: string
+          example: Entertainment 720 SPAC
+        basePrice:
+          type: number
+          format: float
+          example: 12.5
+      required:
+        - symbol
+        - name
+        - basePrice
+    DeleteResponse:
+      type: object
+      properties:
+        deleted:
+          type: string
+          example: E720
+      required:
+        - deleted
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Stock not found
+      required:
+        - error
