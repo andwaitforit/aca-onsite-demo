@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 export const MainContent = (props) => {
     const users = props.users;
-    const {editingUser, setEditingUser, setEditModal, setDeleteUser} = props;
+    const { setEditingUser, setEditModal, setDeleteUser } = props;
     const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
 
     useEffect(() => {
@@ -17,7 +17,6 @@ export const MainContent = (props) => {
         isAdmin={isCurrentUserAdmin} 
         accountNumber={user.number} 
         balance={user.balance} 
-        editingUser={editingUser} 
         setEditingUser={setEditingUser} setEditModal={setEditModal} 
         setDeleteUser={setDeleteUser} />
     });
@@ -29,4 +28,3 @@ export const MainContent = (props) => {
     )
     
   }
-

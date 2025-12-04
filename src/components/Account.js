@@ -4,10 +4,9 @@ import { formatNumber } from "./Utils";
 
 export const Account = (props) => {
     
-    const {type, accountNumber, balance, fullname, editingUser, setEditingUser, setDeleteUser, index, isAdmin, setEditModal} = props;
+    const {type, accountNumber, balance, fullname, setEditingUser, setDeleteUser, index, isAdmin, setEditModal} = props;
     
     const action = isAdmin ? <ActionButtons index={index} 
-      editingUser={editingUser} 
       setEditingUser={setEditingUser} 
       setEditModal={setEditModal} setDeleteUser={setDeleteUser} /> : '';
     
@@ -51,4 +50,3 @@ export const AccountBalance = (props) => {
       <div className="balance">{balance}</div>
     )
   }
-

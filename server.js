@@ -79,8 +79,38 @@ app.get('/api/stocks/batch/:symbols', (req, res) => {
     }
     return null;
   }).filter(Boolean);
-  
+
   res.json(stocks);
+});
+
+// POST a new stock
+app.post('/api/stocks', (req, res) => {
+  const { symbol, name, basePrice } = req.body || {};
+
+  if (!symbol || !name || typeof basePrice !== 'number' || Number.isNaN(basePrice)) {
+    return res.status(400).json({ error: 'symbol, name, and numeric basePrice are required' });
+  }
+
+  if (availableStocks.find(s => s.symbol === symbol)) {
+    return res.status(409).json({ error: 'Stock symbol already exists' });
+  }
+
+  const newStock = { symbol, name, basePrice };
+  availableStocks.push(newStock);
+
+  res.status(201).json(newStock);
+});
+
+// DELETE a stock by symbol
+app.delete('/api/stocks/:symbol', (req, res) => {
+  const index = availableStocks.findIndex(s => s.symbol === req.params.symbol);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Stock not found' });
+  }
+
+  const [removed] = availableStocks.splice(index, 1);
+  res.json({ deleted: removed.symbol });
 });
 
 // Serve static files from React build (only in production/Docker)
@@ -101,4 +131,3 @@ app.listen(PORT, () => {
     console.log('API only mode - use separate React dev server');
   }
 });
-

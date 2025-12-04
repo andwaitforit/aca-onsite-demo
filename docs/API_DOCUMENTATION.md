@@ -10,7 +10,7 @@ The Stock Tracker API provides fake stock market data for businesses from the te
 
 ## Available Stocks
 
-The API supports the following stock symbols:
+The API starts with the following stock symbols (you can add/remove with the endpoints below):
 
 | Symbol | Company Name | Base Price |
 |--------|--------------|------------|
@@ -196,6 +196,71 @@ fetch(`http://localhost:3001/api/stocks/batch/${symbols}`)
 
 ---
 
+### 4. Create a Stock
+
+Adds a new stock to the in-memory list. Data is not persisted after server restarts.
+
+**Endpoint:** `POST /api/stocks`
+
+**Body (JSON):**
+```json
+{
+  "symbol": "E720",
+  "name": "Entertainment 720 SPAC",
+  "basePrice": 12.5
+}
+```
+
+**Response (201):**
+```json
+{
+  "symbol": "E720",
+  "name": "Entertainment 720 SPAC",
+  "basePrice": 12.5
+}
+```
+
+**Validation & Errors:**
+- Missing `symbol`, `name`, or numeric `basePrice`: `400 { "error": "symbol, name, and numeric basePrice are required" }`
+- Duplicate `symbol`: `409 { "error": "Stock symbol already exists" }`
+
+**Example using cURL:**
+```bash
+curl -X POST http://localhost:3001/api/stocks \
+  -H "Content-Type: application/json" \
+  -d '{"symbol":"E720","name":"Entertainment 720 SPAC","basePrice":12.5}'
+```
+
+---
+
+### 5. Delete a Stock
+
+Removes a stock from the in-memory list.
+
+**Endpoint:** `DELETE /api/stocks/:symbol`
+
+**Request:**
+```http
+DELETE http://localhost:3001/api/stocks/E720
+```
+
+**Response (Success):**
+```json
+{ "deleted": "E720" }
+```
+
+**Response (Not Found - 404):**
+```json
+{ "error": "Stock not found" }
+```
+
+**Example using cURL:**
+```bash
+curl -X DELETE http://localhost:3001/api/stocks/E720
+```
+
+---
+
 ## Testing Examples
 
 ### Using Postman
@@ -212,6 +277,15 @@ fetch(`http://localhost:3001/api/stocks/batch/${symbols}`)
    - Method: `GET`
    - URL: `http://localhost:3001/api/stocks/batch/SWANSON,LITTLES,PAWN`
 
+4. **Create Stock:**
+   - Method: `POST`
+   - URL: `http://localhost:3001/api/stocks`
+   - Body: `{ "symbol": "E720", "name": "Entertainment 720 SPAC", "basePrice": 12.5 }`
+
+5. **Delete Stock:**
+   - Method: `DELETE`
+   - URL: `http://localhost:3001/api/stocks/E720`
+
 ### Using cURL
 
 ```bash
@@ -223,6 +297,14 @@ curl http://localhost:3001/api/stocks/GRIZ
 
 # Get multiple stocks
 curl http://localhost:3001/api/stocks/batch/TOMS,JJ,PIT
+
+# Create a stock
+curl -X POST http://localhost:3001/api/stocks \
+  -H "Content-Type: application/json" \
+  -d '{"symbol":"E720","name":"Entertainment 720 SPAC","basePrice":12.5}'
+
+# Delete a stock
+curl -X DELETE http://localhost:3001/api/stocks/E720
 ```
 
 ### Using JavaScript/Node.js
@@ -366,6 +448,10 @@ The API has CORS enabled, allowing requests from any origin. This is configured 
 - [ ] GET /api/stocks/:symbol returns 404 for invalid symbol
 - [ ] GET /api/stocks/batch/:symbols returns array of requested stocks
 - [ ] GET /api/stocks/batch/:symbols filters out invalid symbols
+- [ ] POST /api/stocks creates a stock when body is valid
+- [ ] POST /api/stocks returns 409 when symbol already exists
+- [ ] DELETE /api/stocks/:symbol removes an existing stock
+- [ ] DELETE /api/stocks/:symbol returns 404 when symbol is missing
 - [ ] Prices are different on each request (random generation working)
 - [ ] All responses are valid JSON
 - [ ] CORS headers are present (for browser requests)
@@ -378,5 +464,4 @@ The API has CORS enabled, allowing requests from any origin. This is configured 
 - Prices fluctuate randomly between -5% and +5% of base price
 - All prices are in USD
 - The API does not require authentication
-- The API does not persist data between server restarts
-
+- The API does not persist data between server restarts; POST/DELETE changes are in-memory only

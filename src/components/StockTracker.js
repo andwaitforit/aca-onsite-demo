@@ -1,11 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 export const StockTracker = () => {
+  const fallbackStocks = useMemo(() => ([
+    { symbol: 'SWANSON', name: 'Swanson Foods', basePrice: 45.50 },
+    { symbol: 'LITTLES', name: 'Little Sebastian Memorial', basePrice: 120.00 },
+    { symbol: 'PAWN', name: 'Pawn Shop', basePrice: 15.25 },
+    { symbol: 'RENT', name: 'Rent-A-Swag', basePrice: 32.75 },
+    { symbol: 'TOMS', name: 'Tom\'s Bistro', basePrice: 28.50 },
+    { symbol: 'JJ', name: 'JJ\'s Diner', basePrice: 18.90 },
+    { symbol: 'PIT', name: 'The Pit', basePrice: 22.30 },
+    { symbol: 'SWEET', name: 'Sweetums', basePrice: 55.00 },
+    { symbol: 'GRIZ', name: 'Gryzzl', basePrice: 95.75 },
+    { symbol: 'ENT', name: 'Entertainment 720', basePrice: 0.05 }
+  ]), []);
+
   const [availableStocks, setAvailableStocks] = useState([]);
   const [trackedStocks, setTrackedStocks] = useState([]);
   const [stockData, setStockData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+  const [loadError, setLoadError] = useState(null);
+  const [usingFallback, setUsingFallback] = useState(false);
+  const API_URL = process.env.REACT_APP_API_URL 
+    || (window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '/api');
+
+  const generatePrice = useCallback((basePrice) => {
+    const changePercent = (Math.random() * 10 - 5) / 100;
+    return Math.round(basePrice * (1 + changePercent) * 100) / 100;
+  }, []);
 
   // Load tracked stocks from localStorage on mount
   useEffect(() => {
@@ -16,10 +36,82 @@ export const StockTracker = () => {
     }
   }, []);
 
+  const fetchAvailableStocks = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/stocks`);
+      if (!response.ok) {
+        throw new Error(`Status ${response.status}`);
+      }
+      const data = await response.json();
+      setAvailableStocks(data);
+      setUsingFallback(false);
+      setLoadError(null);
+    } catch (error) {
+      console.error('Error fetching stocks:', error);
+      setUsingFallback(true);
+      setLoadError('Unable to load stocks from the API. Showing sample data.');
+      // fall back to local sample data
+      const generated = fallbackStocks.map(stock => ({
+        ...stock,
+        price: generatePrice(stock.basePrice),
+        change: (Math.random() * 10 - 5).toFixed(2),
+        changePercent: ((Math.random() * 10 - 5) / 100).toFixed(2)
+      }));
+      setAvailableStocks(generated);
+    }
+  }, [API_URL, generatePrice, fallbackStocks]);
+
+  const buildStockMapFromAvailable = useCallback(() => {
+    const stockMap = {};
+    trackedStocks.forEach(symbol => {
+      const stock = availableStocks.find(s => s.symbol === symbol);
+      if (stock) {
+        stockMap[symbol] = {
+          symbol: stock.symbol,
+          name: stock.name,
+          price: typeof stock.price === 'number' ? stock.price : generatePrice(stock.basePrice || 0),
+          change: stock.change ?? (Math.random() * 10 - 5).toFixed(2),
+          changePercent: stock.changePercent ?? ((Math.random() * 10 - 5) / 100).toFixed(2)
+        };
+      }
+    });
+    setStockData(stockMap);
+  }, [availableStocks, trackedStocks, generatePrice]);
+
+  const fetchStockData = useCallback(async () => {
+    if (trackedStocks.length === 0) return;
+
+    if (usingFallback) {
+      buildStockMapFromAvailable();
+      return;
+    }
+
+    try {
+      const symbols = trackedStocks.join(',');
+      const response = await fetch(`${API_URL}/stocks/batch/${symbols}`);
+      if (!response.ok) {
+        throw new Error(`Status ${response.status}`);
+      }
+      const data = await response.json();
+      
+      const stockMap = {};
+      data.forEach(stock => {
+        stockMap[stock.symbol] = stock;
+      });
+      setStockData(stockMap);
+      setLoadError(null);
+    } catch (error) {
+      console.error('Error fetching stock data:', error);
+      setUsingFallback(true);
+      setLoadError('Unable to load stocks from the API. Showing sample data.');
+      buildStockMapFromAvailable();
+    }
+  }, [API_URL, trackedStocks, usingFallback, buildStockMapFromAvailable]);
+
   // Fetch available stocks
   useEffect(() => {
     fetchAvailableStocks();
-  }, []);
+  }, [fetchAvailableStocks]);
 
   // Fetch stock data for tracked stocks
   useEffect(() => {
@@ -28,38 +120,7 @@ export const StockTracker = () => {
       const interval = setInterval(fetchStockData, 5000); // Update every 5 seconds
       return () => clearInterval(interval);
     }
-  }, [trackedStocks]);
-
-  const fetchAvailableStocks = async () => {
-    try {
-      const response = await fetch(`${API_URL}/stocks`);
-      const data = await response.json();
-      setAvailableStocks(data);
-    } catch (error) {
-      console.error('Error fetching stocks:', error);
-    }
-  };
-
-  const fetchStockData = async () => {
-    if (trackedStocks.length === 0) return;
-    
-    setLoading(true);
-    try {
-      const symbols = trackedStocks.join(',');
-      const response = await fetch(`${API_URL}/stocks/batch/${symbols}`);
-      const data = await response.json();
-      
-      const stockMap = {};
-      data.forEach(stock => {
-        stockMap[stock.symbol] = stock;
-      });
-      setStockData(stockMap);
-    } catch (error) {
-      console.error('Error fetching stock data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [trackedStocks, fetchStockData]);
 
   const addStock = (symbol) => {
     if (!trackedStocks.includes(symbol)) {
@@ -142,6 +203,9 @@ export const StockTracker = () => {
         )}
 
         <h2 style={{ marginTop: '2rem' }}>Available Stocks</h2>
+        {loadError && availableStocks.length === 0 && (
+          <p style={{ color: '#DC143C', marginTop: '0.3rem' }}>{loadError}</p>
+        )}
         <div className="available-stocks">
           {availableStocks
             .filter(stock => !trackedStocks.includes(stock.symbol))
@@ -169,4 +233,3 @@ export const StockTracker = () => {
     </div>
   );
 };
-
