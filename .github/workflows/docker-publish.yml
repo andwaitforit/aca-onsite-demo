@@ -68,8 +68,8 @@ jobs:
           MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
-          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
+          application-id: pyxVY85PbtAS13BRph9oMw-a
+          environment-id: q9zKG9QeNP80jdUC8NpcZQ-e
           plan-labels: e2e
           continue-on-failure: false
 
@@ -123,7 +123,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes deploy@192.168.1.69 \
-            "sudo '/mnt/NVME Pool/mabldemo/andy/restart-bank-demo.sh'"
+            "sudo '/mnt/NVME Pool/mabldemo/darrel/restart-bank-demo.sh'"
 
       - name: Run mabl smoke tests
         id: mabl-test-smoke
@@ -132,8 +132,8 @@ jobs:
           MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
-          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
+          application-id: pyxVY85PbtAS13BRph9oMw-a
+          environment-id: q9zKG9QeNP80jdUC8NpcZQ-e
           plan-labels: smoke
           continue-on-failure: true
 
