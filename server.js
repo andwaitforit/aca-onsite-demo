@@ -21,6 +21,9 @@ const availableStocks = [
   { symbol: 'ENT', name: 'Entertainment 720', basePrice: 0.05 }
 ];
 
+// In-memory tracked symbols list (mirrors client tracked stocks)
+const trackedStockSymbols = [];
+
 // Generate fake stock prices with random fluctuations
 function generateStockPrice(basePrice) {
   const changePercent = (Math.random() * 10 - 5) / 100; // -5% to +5%
@@ -83,6 +86,30 @@ app.get('/api/stocks/batch/:symbols', (req, res) => {
   res.json(stocks);
 });
 
+// GET tracked stocks (with live quote data)
+app.get('/api/tracked-stocks', (req, res) => {
+  const stocks = trackedStockSymbols.map(symbol => {
+    const stock = availableStocks.find(s => s.symbol === symbol);
+    if (!stock) {
+      return null;
+    }
+
+    const price = generateStockPrice(stock.basePrice);
+    const change = (Math.random() * 10 - 5).toFixed(2);
+    const changePercent = ((Math.random() * 10 - 5) / 100).toFixed(2);
+
+    return {
+      symbol: stock.symbol,
+      name: stock.name,
+      price,
+      change,
+      changePercent
+    };
+  }).filter(Boolean);
+
+  res.json(stocks);
+});
+
 // POST a new stock
 app.post('/api/stocks', (req, res) => {
   const { symbol, name, basePrice } = req.body || {};
@@ -111,6 +138,49 @@ app.delete('/api/stocks/:symbol', (req, res) => {
 
   const [removed] = availableStocks.splice(index, 1);
   res.json({ deleted: removed.symbol });
+});
+
+// POST track a stock
+app.post('/api/tracked-stocks', (req, res) => {
+  const { symbol } = req.body || {};
+  if (!symbol || typeof symbol !== 'string') {
+    return res.status(400).json({ error: 'symbol is required' });
+  }
+
+  const normalizedSymbol = symbol.trim().toUpperCase();
+  const stock = availableStocks.find(s => s.symbol === normalizedSymbol);
+  if (!stock) {
+    return res.status(404).json({ error: 'Stock not found' });
+  }
+
+  if (trackedStockSymbols.includes(stock.symbol)) {
+    return res.status(409).json({ error: 'Stock already tracked' });
+  }
+
+  trackedStockSymbols.push(stock.symbol);
+  const price = generateStockPrice(stock.basePrice);
+  const change = (Math.random() * 10 - 5).toFixed(2);
+  const changePercent = ((Math.random() * 10 - 5) / 100).toFixed(2);
+
+  res.status(201).json({
+    symbol: stock.symbol,
+    name: stock.name,
+    price,
+    change,
+    changePercent
+  });
+});
+
+// DELETE tracked stock
+app.delete('/api/tracked-stocks/:symbol', (req, res) => {
+  const symbol = (req.params.symbol || '').toUpperCase();
+  const idx = trackedStockSymbols.findIndex(s => s === symbol);
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Stock not tracked' });
+  }
+
+  trackedStockSymbols.splice(idx, 1);
+  res.json({ removed: symbol });
 });
 
 // Serve static files from React build (only in production/Docker)

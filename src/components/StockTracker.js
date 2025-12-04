@@ -19,6 +19,7 @@ export const StockTracker = () => {
   const [stockData, setStockData] = useState({});
   const [loadError, setLoadError] = useState(null);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [trackedLoadError, setTrackedLoadError] = useState(null);
   const API_URL = process.env.REACT_APP_API_URL 
     || (window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '/api');
 
@@ -27,14 +28,55 @@ export const StockTracker = () => {
     return Math.round(basePrice * (1 + changePercent) * 100) / 100;
   }, []);
 
-  // Load tracked stocks from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('trackedStocks');
-    if (saved) {
-      const symbols = JSON.parse(saved);
+  const constructStockMap = useCallback((symbols) => {
+    const stockMap = {};
+    symbols.forEach(symbol => {
+      const stock = availableStocks.find(s => s.symbol === symbol);
+      if (stock) {
+        stockMap[symbol] = {
+          symbol: stock.symbol,
+          name: stock.name,
+          price: typeof stock.price === 'number' ? stock.price : generatePrice(stock.basePrice || 0),
+          change: stock.change ?? (Math.random() * 10 - 5).toFixed(2),
+          changePercent: stock.changePercent ?? ((Math.random() * 10 - 5) / 100).toFixed(2)
+        };
+      }
+    });
+    return stockMap;
+  }, [availableStocks, generatePrice]);
+
+  const buildStockMapFromAvailable = useCallback(() => {
+    setStockData(constructStockMap(trackedStocks));
+  }, [constructStockMap, trackedStocks]);
+
+  const syncTrackedFromServer = useCallback(async () => {
+    try {
+      setTrackedLoadError(null);
+      const response = await fetch(`${API_URL}/tracked-stocks`);
+      if (!response.ok) {
+        throw new Error(`Status ${response.status}`);
+      }
+      const data = await response.json();
+      const symbols = data.map(stock => stock.symbol);
       setTrackedStocks(symbols);
+      const map = {};
+      data.forEach(stock => { map[stock.symbol] = stock; });
+      setStockData(map);
+      localStorage.setItem('trackedStocks', JSON.stringify(symbols));
+    } catch (error) {
+      console.error('Error fetching tracked stocks:', error);
+      setTrackedLoadError('Unable to load tracked stocks from API. Showing local data.');
+      const saved = localStorage.getItem('trackedStocks');
+      if (saved) {
+        const symbols = JSON.parse(saved);
+        setTrackedStocks(symbols);
+        setStockData(constructStockMap(symbols));
+      } else {
+        setTrackedStocks([]);
+        setStockData({});
+      }
     }
-  }, []);
+  }, [API_URL, constructStockMap]);
 
   const fetchAvailableStocks = useCallback(async () => {
     try {
@@ -60,23 +102,6 @@ export const StockTracker = () => {
       setAvailableStocks(generated);
     }
   }, [API_URL, generatePrice, fallbackStocks]);
-
-  const buildStockMapFromAvailable = useCallback(() => {
-    const stockMap = {};
-    trackedStocks.forEach(symbol => {
-      const stock = availableStocks.find(s => s.symbol === symbol);
-      if (stock) {
-        stockMap[symbol] = {
-          symbol: stock.symbol,
-          name: stock.name,
-          price: typeof stock.price === 'number' ? stock.price : generatePrice(stock.basePrice || 0),
-          change: stock.change ?? (Math.random() * 10 - 5).toFixed(2),
-          changePercent: stock.changePercent ?? ((Math.random() * 10 - 5) / 100).toFixed(2)
-        };
-      }
-    });
-    setStockData(stockMap);
-  }, [availableStocks, trackedStocks, generatePrice]);
 
   const fetchStockData = useCallback(async () => {
     if (trackedStocks.length === 0) return;
@@ -113,6 +138,10 @@ export const StockTracker = () => {
     fetchAvailableStocks();
   }, [fetchAvailableStocks]);
 
+  useEffect(() => {
+    syncTrackedFromServer();
+  }, [syncTrackedFromServer]);
+
   // Fetch stock data for tracked stocks
   useEffect(() => {
     if (trackedStocks.length > 0) {
@@ -122,22 +151,51 @@ export const StockTracker = () => {
     }
   }, [trackedStocks, fetchStockData]);
 
-  const addStock = (symbol) => {
-    if (!trackedStocks.includes(symbol)) {
-      const updated = [...trackedStocks, symbol];
+  const addStock = async (symbol) => {
+    if (trackedStocks.includes(symbol)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/tracked-stocks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol })
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || `Status ${response.status}`);
+      }
+      const data = await response.json();
+      const updated = [...trackedStocks, data.symbol];
       setTrackedStocks(updated);
       localStorage.setItem('trackedStocks', JSON.stringify(updated));
+      setStockData(prev => ({ ...prev, [data.symbol]: data }));
+    } catch (error) {
+      console.error('Error adding tracked stock:', error);
+      setTrackedLoadError('Unable to add tracked stock.');
     }
   };
 
-  const removeStock = (symbol) => {
-    const updated = trackedStocks.filter(s => s !== symbol);
-    setTrackedStocks(updated);
-    localStorage.setItem('trackedStocks', JSON.stringify(updated));
-    
-    const newStockData = { ...stockData };
-    delete newStockData[symbol];
-    setStockData(newStockData);
+  const removeStock = async (symbol) => {
+    try {
+      const response = await fetch(`${API_URL}/tracked-stocks/${symbol}`, {
+        method: 'DELETE'
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || `Status ${response.status}`);
+      }
+      const updated = trackedStocks.filter(s => s !== symbol);
+      setTrackedStocks(updated);
+      localStorage.setItem('trackedStocks', JSON.stringify(updated));
+      const newStockData = { ...stockData };
+      delete newStockData[symbol];
+      setStockData(newStockData);
+    } catch (error) {
+      console.error('Error removing tracked stock:', error);
+      setTrackedLoadError('Unable to remove tracked stock.');
+    }
   };
 
   const getChangeColor = (change) => {

@@ -261,6 +261,72 @@ curl -X DELETE http://localhost:3001/api/stocks/E720
 
 ---
 
+### 6. Get Tracked Stocks
+
+Returns the list of currently tracked stocks (used by the UI list at the top of the Stock Tracker page). Data is stored in memory only.
+
+**Endpoint:** `GET /api/tracked-stocks`
+
+**Response:**
+```json
+[
+  {
+    "symbol": "SWANSON",
+    "name": "Swanson Foods",
+    "price": 44.91,
+    "change": "-0.45",
+    "changePercent": "-0.03"
+  }
+]
+```
+
+---
+
+### 7. Add a Tracked Stock
+
+Adds a stock symbol to the tracked list. Equivalent to clicking **+ Add** in the UI. Duplicate symbols are rejected.
+
+**Endpoint:** `POST /api/tracked-stocks`
+
+**Body (JSON):**
+```json
+{ "symbol": "SWANSON" }
+```
+
+**Response (201):** Returns the tracked stock with live pricing (same shape as `/api/stocks/:symbol`).
+
+**Errors:**
+- Missing/invalid `symbol`: `400`
+- Stock not found in available list: `404`
+- Stock already tracked: `409`
+
+**Example using cURL:**
+```bash
+curl -X POST http://localhost:3001/api/tracked-stocks \
+  -H "Content-Type: application/json" \
+  -d '{"symbol":"SWANSON"}'
+```
+
+---
+
+### 8. Remove a Tracked Stock
+
+Removes a symbol from the tracked list.
+
+**Endpoint:** `DELETE /api/tracked-stocks/:symbol`
+
+**Response (Success):**
+```json
+{ "removed": "SWANSON" }
+```
+
+**Example using cURL:**
+```bash
+curl -X DELETE http://localhost:3001/api/tracked-stocks/SWANSON
+```
+
+---
+
 ## Testing Examples
 
 ### Using Postman
@@ -286,6 +352,19 @@ curl -X DELETE http://localhost:3001/api/stocks/E720
    - Method: `DELETE`
    - URL: `http://localhost:3001/api/stocks/E720`
 
+6. **Get Tracked Stocks:**
+   - Method: `GET`
+   - URL: `http://localhost:3001/api/tracked-stocks`
+
+7. **Add Tracked Stock:**
+   - Method: `POST`
+   - URL: `http://localhost:3001/api/tracked-stocks`
+   - Body: `{ "symbol": "SWANSON" }`
+
+8. **Remove Tracked Stock:**
+   - Method: `DELETE`
+   - URL: `http://localhost:3001/api/tracked-stocks/SWANSON`
+
 ### Using cURL
 
 ```bash
@@ -305,6 +384,17 @@ curl -X POST http://localhost:3001/api/stocks \
 
 # Delete a stock
 curl -X DELETE http://localhost:3001/api/stocks/E720
+
+# List tracked stocks
+curl http://localhost:3001/api/tracked-stocks
+
+# Add a tracked stock
+curl -X POST http://localhost:3001/api/tracked-stocks \
+  -H "Content-Type: application/json" \
+  -d '{"symbol":"SWANSON"}'
+
+# Remove a tracked stock
+curl -X DELETE http://localhost:3001/api/tracked-stocks/SWANSON
 ```
 
 ### Using JavaScript/Node.js

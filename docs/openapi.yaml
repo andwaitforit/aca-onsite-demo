@@ -175,6 +175,80 @@ paths:
                       price: 19.77
                       change: "0.48"
                       changePercent: "0.025"
+  /api/tracked-stocks:
+    get:
+      summary: List tracked stocks
+      description: Returns the current tracked stock list with live pricing (same data shown in the UI tracked cards). Stored in memory only.
+      responses:
+        '200':
+          description: Tracked stocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockQuote'
+              examples:
+                success:
+                  value:
+                    - symbol: SWANSON
+                      name: Swanson Foods
+                      price: 45.02
+                      change: "-0.28"
+                      changePercent: "-0.006"
+    post:
+      summary: Track a stock
+      description: Adds a symbol to the tracked list. Fails if symbol is missing, unknown, or already tracked.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackStockRequest'
+      responses:
+        '201':
+          description: Stock added to tracked list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockQuote'
+        '400':
+          description: Missing symbol
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Stock not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Already tracked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/tracked-stocks/{symbol}:
+    delete:
+      summary: Remove tracked stock
+      description: Removes the symbol from the tracked list.
+      parameters:
+        - $ref: '#/components/parameters/SymbolParam'
+      responses:
+        '200':
+          description: Stock removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackedDeleteResponse'
+        '404':
+          description: Symbol was not tracked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   parameters:
     SymbolParam:
@@ -254,6 +328,22 @@ components:
           example: E720
       required:
         - deleted
+    TrackedDeleteResponse:
+      type: object
+      properties:
+        removed:
+          type: string
+          example: SWANSON
+      required:
+        - removed
+    TrackStockRequest:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: SWANSON
+      required:
+        - symbol
     Error:
       type: object
       properties:

@@ -37,6 +37,10 @@ async function runTests() {
   console.log('🚀 Starting API Tests...');
   console.log('='.repeat(50));
   const testSymbol = `TST${Date.now().toString(36).toUpperCase()}`;
+  const trackedSymbol = 'SWANSON';
+
+  // Ensure tracked symbol starts from clean slate
+  await fetch(`${BASE_URL}/tracked-stocks/${trackedSymbol}`, { method: 'DELETE' }).catch(() => {});
   
   // Test 1: Get all stocks
   await testEndpoint(
@@ -108,8 +112,60 @@ async function runTests() {
     404,
     { method: 'DELETE' }
   );
+
+  // Test 10: List tracked stocks (initial state)
+  await testEndpoint(
+    'Get Tracked Stocks (Initial)',
+    `${BASE_URL}/tracked-stocks`
+  );
+
+  // Test 11: Add tracked stock
+  await testEndpoint(
+    'Add Tracked Stock',
+    `${BASE_URL}/tracked-stocks`,
+    201,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: trackedSymbol })
+    }
+  );
+
+  // Test 12: Get tracked stocks (after add)
+  await testEndpoint(
+    'Get Tracked Stocks (After Add)',
+    `${BASE_URL}/tracked-stocks`
+  );
+
+  // Test 13: Add tracked stock duplicate
+  await testEndpoint(
+    'Add Tracked Stock (Duplicate)',
+    `${BASE_URL}/tracked-stocks`,
+    409,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: trackedSymbol })
+    }
+  );
+
+  // Test 14: Remove tracked stock
+  await testEndpoint(
+    'Remove Tracked Stock',
+    `${BASE_URL}/tracked-stocks/${trackedSymbol}`,
+    200,
+    { method: 'DELETE' }
+  );
+
+  // Test 15: Remove tracked stock (not found)
+  await testEndpoint(
+    'Remove Tracked Stock (Not Found)',
+    `${BASE_URL}/tracked-stocks/${trackedSymbol}`,
+    404,
+    { method: 'DELETE' }
+  );
   
-  // Test 10: Verify price changes
+  // Test 16: Verify price changes
   console.log('\n🔄 Testing Price Randomization...');
   const result1 = await testEndpoint('First Request', `${BASE_URL}/stocks/SWANSON`);
   await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
