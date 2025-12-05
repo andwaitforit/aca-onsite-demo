@@ -30,43 +30,41 @@ export const Dashboard = (props) => {
 
     useEffect(() => {
         if(deleteUser !== null) {
-
-            const filteredUsers = users.filter((user, index) => {
-                return index !== deleteUser
+            setUsers(prevUsers => {
+                const filteredUsers = prevUsers.filter((user, index) => index !== deleteUser);
+                localStorage.setItem('users', JSON.stringify(filteredUsers));
+                return filteredUsers;
             });
-
-            setUsers(filteredUsers);
             setDeleteUser(null);
-            // save
-            localStorage.setItem('users', JSON.stringify(filteredUsers));
         }
     }, [deleteUser]);
 
     useEffect(() => {
-        if(isUpdate) {
-            const filteredUsers = users.map((user, index) => {
-                if(user.number === newAccount.number) {
-                    user = {...user, ...newAccount};
-                }
-                return user;
-            });
+        if(isUpdate && newAccount) {
+            setUsers(prevUsers => {
+                const filteredUsers = prevUsers.map(user => {
+                    if(user.number === newAccount.number) {
+                        return {...user, ...newAccount};
+                    }
+                    return user;
+                });
 
-            setUsers(filteredUsers);
+                localStorage.setItem('users', JSON.stringify(filteredUsers));
+                return filteredUsers;
+            });
             setIsUpdate(false);
-            // save
-            localStorage.setItem('users', JSON.stringify(filteredUsers));
         }
-    }, [isUpdate]);
+    }, [isUpdate, newAccount]);
 
     let modal = null;
     if(editingUser !== null && editModal) {
         const user = users[editingUser];
         // accountName={} accountNumber={} balance={}
-        modal = <AccountEditModal 
-            accountName={user.fullname} 
-            accountNumber={user.number} 
-            balance={user.balance} setEditModal={setEditModal} 
-            setIsUpdate={setIsUpdate} setNewAccount={setNewAccount} setIsUpdate={setIsUpdate}  />
+            modal = <AccountEditModal 
+                accountName={user.fullname} 
+                accountNumber={user.number} 
+                balance={user.balance} setEditModal={setEditModal} 
+                setIsUpdate={setIsUpdate} setNewAccount={setNewAccount} />
     }
 
     if(page === 'home') {

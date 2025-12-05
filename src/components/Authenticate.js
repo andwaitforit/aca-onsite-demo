@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import DATA from '../data';
 import { Dashboard } from './Dashboard';
 import { LoginPage } from './LoginPage';
@@ -16,6 +16,20 @@ export const Authenticate = () => {
     }
 
     const clients = JSON.parse(localStorage.getItem('users'));
+
+    // Restore session from localStorage if available
+    useEffect(() => {
+      const saved = localStorage.getItem('currentUser');
+      if (saved) {
+        const savedUser = JSON.parse(saved);
+        const latestUsers = JSON.parse(localStorage.getItem('users')) || [];
+        // Find the freshest record in local storage by unique id (email or number)
+        const liveUser = latestUsers.find(u => u.email === savedUser.email || u.number === savedUser.number) || savedUser;
+        setClient(liveUser);
+        setIsAdmin(!!liveUser.isAdmin);
+        setIsLoggedIn(true);
+      }
+    }, []);
 
     const isLoginSuccess = (email, password) => {
       let isFound = false;
@@ -49,7 +63,7 @@ export const Authenticate = () => {
     const logout = () => {
         setIsLoggedIn(false);
         setIsAdmin(false);
-        localStorage.removeItem('client')
+        localStorage.removeItem('currentUser');
         setNotif({message: 'You have logged out.', style: 'success'});
     }
   

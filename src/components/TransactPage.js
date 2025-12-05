@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Notif } from "./Notif";
 import { formatNumber, findAccount, transact, trim, capitalize } from "./Utils";
 
@@ -8,8 +8,8 @@ export const TransactPage = (props) => {
     const notif = props.notif;
     const [accounts, setAccounts] = useState(users);
     const [selectedAccount, setSelectedAccount] = useState({balance: 0});
-    const [depositAmount, setDepositAmount] = useState(0);
     const [donationEnabled, setDonationEnabled] = useState(false);
+    const amountInputRef = useRef(null);
     
     const DONATION_AMOUNT = 5; // Fixed $5 donation to Sweetums Charity
 
@@ -29,19 +29,14 @@ export const TransactPage = (props) => {
         }
     }
 
-    const onDeposit = (e) => {
-        const rawValue = e.target.value;
-        const amount = trim(rawValue);
-        setDepositAmount(amount);
-    }
-
     const onDonationToggle = () => {
         setDonationEnabled(prev => !prev);
     }
 
     const processTransfer = (e) => {
         e.preventDefault();
-        const amount = trim(e.target.elements.amount.value);
+        const rawAmount = amountInputRef.current ? amountInputRef.current.value : '';
+        const amount = trim(rawAmount);
         const accountNumber = e.target.elements.account.value;
         
         // FIX: Include the fixed $5 donation if enabled
@@ -57,7 +52,9 @@ export const TransactPage = (props) => {
                     transact(user.number, totalAmount, props.type, props.setUsers);
                     setSelectedAccount(findAccount(user.number));
                     setAccounts(JSON.parse(localStorage.getItem('users')));
-                    setDepositAmount(0);
+                    if (amountInputRef.current) {
+                        amountInputRef.current.value = '';
+                    }
                     setDonationEnabled(false);
                     
                     let message = `${capitalize(props.page)} successful.`;
@@ -93,7 +90,16 @@ export const TransactPage = (props) => {
                 
                 <div className="transfer-icon"><i className={icon}></i></div>
                 <label>Amount to {props.page}</label>
-                <input type="text" name="amount" value={depositAmount || ''} onChange={onDeposit} autoComplete="off" className="right big-input" placeholder="0.00" />
+                <input
+                  type="text"
+                  name="amount"
+                  ref={amountInputRef}
+                  autoComplete="off"
+                  className="right big-input"
+                  placeholder="0.00"
+                  inputMode="decimal"
+                  aria-label={`Amount to ${props.page}`}
+                />
                 
                 {showDonation && (
                     <div style={{marginTop: '20px', padding: '15px', backgroundColor: '#f0f8ff', borderRadius: '5px', border: '1px solid #4CAF50'}}>

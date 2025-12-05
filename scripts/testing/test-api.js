@@ -7,13 +7,16 @@
 const BASE_URL = 'http://localhost:3001/api';
 
 // Test helper function
-async function testEndpoint(name, url, expectedStatus = 200) {
+async function testEndpoint(name, url, expectedStatus = 200, options = {}) {
   try {
     console.log(`\n🧪 Testing: ${name}`);
     console.log(`   URL: ${url}`);
+    if (options.method) {
+      console.log(`   Method: ${options.method}`);
+    }
     
-    const response = await fetch(url);
-    const data = await response.json();
+    const response = await fetch(url, options);
+    const data = await response.json().catch(() => ({}));
     
     if (response.status === expectedStatus) {
       console.log(`   ✅ Status: ${response.status} (Expected: ${expectedStatus})`);
@@ -33,6 +36,11 @@ async function testEndpoint(name, url, expectedStatus = 200) {
 async function runTests() {
   console.log('🚀 Starting API Tests...');
   console.log('='.repeat(50));
+  const testSymbol = `TST${Date.now().toString(36).toUpperCase()}`;
+  const trackedSymbol = 'SWANSON';
+
+  // Ensure tracked symbol starts from clean slate
+  await fetch(`${BASE_URL}/tracked-stocks/${trackedSymbol}`, { method: 'DELETE' }).catch(() => {});
   
   // Test 1: Get all stocks
   await testEndpoint(
@@ -64,8 +72,100 @@ async function runTests() {
     'Get Batch Stocks (Mixed)',
     `${BASE_URL}/stocks/batch/SWANSON,INVALID,PAWN`
   );
+
+  // Test 6: Create stock (valid)
+  await testEndpoint(
+    'Create Stock (Valid)',
+    `${BASE_URL}/stocks`,
+    201,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: testSymbol, name: 'Test Co', basePrice: 10.5 })
+    }
+  );
+
+  // Test 7: Create stock (duplicate)
+  await testEndpoint(
+    'Create Stock (Duplicate)',
+    `${BASE_URL}/stocks`,
+    409,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: testSymbol, name: 'Test Co Again', basePrice: 20 })
+    }
+  );
+
+  // Test 8: Delete stock (valid)
+  await testEndpoint(
+    'Delete Stock (Valid)',
+    `${BASE_URL}/stocks/${testSymbol}`,
+    200,
+    { method: 'DELETE' }
+  );
+
+  // Test 9: Delete stock (not found)
+  await testEndpoint(
+    'Delete Stock (Not Found)',
+    `${BASE_URL}/stocks/${testSymbol}`,
+    404,
+    { method: 'DELETE' }
+  );
+
+  // Test 10: List tracked stocks (initial state)
+  await testEndpoint(
+    'Get Tracked Stocks (Initial)',
+    `${BASE_URL}/tracked-stocks`
+  );
+
+  // Test 11: Add tracked stock
+  await testEndpoint(
+    'Add Tracked Stock',
+    `${BASE_URL}/tracked-stocks`,
+    201,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: trackedSymbol })
+    }
+  );
+
+  // Test 12: Get tracked stocks (after add)
+  await testEndpoint(
+    'Get Tracked Stocks (After Add)',
+    `${BASE_URL}/tracked-stocks`
+  );
+
+  // Test 13: Add tracked stock duplicate
+  await testEndpoint(
+    'Add Tracked Stock (Duplicate)',
+    `${BASE_URL}/tracked-stocks`,
+    409,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: trackedSymbol })
+    }
+  );
+
+  // Test 14: Remove tracked stock
+  await testEndpoint(
+    'Remove Tracked Stock',
+    `${BASE_URL}/tracked-stocks/${trackedSymbol}`,
+    200,
+    { method: 'DELETE' }
+  );
+
+  // Test 15: Remove tracked stock (not found)
+  await testEndpoint(
+    'Remove Tracked Stock (Not Found)',
+    `${BASE_URL}/tracked-stocks/${trackedSymbol}`,
+    404,
+    { method: 'DELETE' }
+  );
   
-  // Test 6: Verify price changes
+  // Test 16: Verify price changes
   console.log('\n🔄 Testing Price Randomization...');
   const result1 = await testEndpoint('First Request', `${BASE_URL}/stocks/SWANSON`);
   await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
@@ -98,4 +198,3 @@ runTests().catch(error => {
   console.error('❌ Test suite failed:', error);
   process.exit(1);
 });
-

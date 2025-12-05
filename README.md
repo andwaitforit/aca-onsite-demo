@@ -62,6 +62,10 @@ npm run reset-feature       # Reset to original state
 npm run demo:full           # Run complete donation demo automatically
 ```
 
+## API Docs
+- Human-readable guide: `docs/API_DOCUMENTATION.md`
+- OpenAPI/Swagger spec: `docs/openapi.yaml` (import into Swagger UI/Inspector, Postman, or VS Code extensions)
+
 ## Demo Scenarios
 
 ### 1. Auto-Healing Demo (mabl vs Playwright)
@@ -274,4 +278,3 @@ You can test the API endpoints using:
 - **cURL**: See examples in the API documentation
 - **Postman**: Import the endpoints from the documentation
 - **Test Script**: Run `node scripts/test-api.js` (requires Node.js 18+ or node-fetch)
-
