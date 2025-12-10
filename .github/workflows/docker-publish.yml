@@ -68,8 +68,8 @@ jobs:
           MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          application-id: pyxVY85PbtAS13BRph9oMw-a
-          environment-id: q9zKG9QeNP80jdUC8NpcZQ-e
+          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
+          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
           plan-labels: e2e
           continue-on-failure: false
 
@@ -132,8 +132,8 @@ jobs:
           MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          application-id: pyxVY85PbtAS13BRph9oMw-a
-          environment-id: q9zKG9QeNP80jdUC8NpcZQ-e
+          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
+          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
           plan-labels: smoke
           continue-on-failure: true
 
