@@ -149,7 +149,7 @@ export const TransferPage = (props) => {
                 {senderField}
 
                 <label>Current balance</label>
-                <input type="text" className="right" value={formatNumber(sender.balance)} disabled />
+                <div className="balance-display right">{formatNumber(sender.balance)}</div>
 
                 <label>Amount to Transfer</label>
                 <input type="text" name="amount" value={transferAmount || ''} onChange={onTransfer} autoComplete="off" className="right big-input" placeholder="0.00" />
@@ -162,7 +162,7 @@ export const TransferPage = (props) => {
                     {newReceivers}
                 </select>
                 <label>Current balance</label>
-                <input type="text" className="right" value={formatNumber(receiver.balance)} disabled />
+                <div className="balance-display right">{formatNumber(receiver.balance)}</div>
                 <input type="submit" className="btn" value="Transfer Fund" />
             </form>
         </section>

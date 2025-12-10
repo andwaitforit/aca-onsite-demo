@@ -47,6 +47,6 @@ export const AccountNumber = (props) => {
 export const AccountBalance = (props) => {
     const balance = props.balance;
     return (
-      <div className="balance">{balance}</div>
+      <div className="balance" value={balance}>{balance}</div>
     )
   }
