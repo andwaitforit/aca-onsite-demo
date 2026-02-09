@@ -27,7 +27,7 @@ jobs:
         with:
           application-id: DKjPLqbtZzGN9wuWe2Lylg-a
           environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
-          plan-labels: e2e
+          plan-labels: criticalPath
           continue-on-failure: false
 
       - name: Output mabl test results
