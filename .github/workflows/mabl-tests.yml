@@ -1,0 +1,46 @@
+name: mabl GitHub Integration Demo
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  mabl-tests:
+    name: Run mabl Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run mabl regression tests
+        id: mabl-test
+        uses: mablhq/github-run-tests-action@v1
+        env:
+          MABL_API_KEY: ${{ secrets.MABL_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          application-id: DKjPLqbtZzGN9wuWe2Lylg-a
+          environment-id: eYHXwE5MYUVwMrsM1D8w0g-e
+          plan-labels: e2e
+          continue-on-failure: false
+
+      - name: Output mabl test results
+        if: always()
+        run: |
+          echo "## mabl Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployment ID | ${{ steps.mabl-test.outputs.mabl-deployment-id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Plans Run | ${{ steps.mabl-test.outputs.plans_run }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Plans Passed | ${{ steps.mabl-test.outputs.plans_passed }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Plans Failed | ${{ steps.mabl-test.outputs.plans_failed }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests Run | ${{ steps.mabl-test.outputs.tests_run }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests Passed | ${{ steps.mabl-test.outputs.tests_passed }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests Failed | ${{ steps.mabl-test.outputs.tests_failed }} |" >> $GITHUB_STEP_SUMMARY
